@@ -1,0 +1,56 @@
+from PIL import Image
+
+def encrypt_image(image_path, key):
+    img = Image.open(image_path)
+    img = img.convert('RGB')  # Ensure image is in RGB mode
+    pixels = img.load()
+
+    width, height = img.size
+
+    for y in range(height):
+        for x in range(width):
+            r, g, b = pixels[x, y]
+
+            # Example: swapping pixel values
+            # You can modify this section for other encryption techniques
+            r = (r + key) % 256
+            g = (g + key) % 256
+            b = (b + key) % 256
+
+            pixels[x, y] = (r, g, b)
+
+    encrypted_img_path = "encrypted_" + image_path
+    img.save(encrypted_img_path)
+    return encrypted_img_path
+
+def decrypt_image(encrypted_image_path, key):
+    img = Image.open(encrypted_image_path)
+    img = img.convert('RGB')  # Ensure image is in RGB mode
+    pixels = img.load()
+
+    width, height = img.size
+
+    for y in range(height):
+        for x in range(width):
+            r, g, b = pixels[x, y]
+
+            # Decrypting the image (reverse operation of encryption)
+            r = (r - key) % 256
+            g = (g - key) % 256
+            b = (b - key) % 256
+
+            pixels[x, y] = (r, g, b)
+
+    decrypted_img_path = "decrypted_" + encrypted_image_path[len("encrypted_"):]
+    img.save(decrypted_img_path)
+    return decrypted_img_path
+
+# Example usage
+image_path = r"C:\Users\harsh\Desktop\Intership\Task 2\clear.png"  # Replace with your image path
+encryption_key = 50
+
+encrypted_image = encrypt_image(image_path, encryption_key)
+print("Image encrypted:", encrypted_image)
+
+decrypted_image = decrypt_image(encrypted_image, encryption_key)
+print("Image decrypted:", decrypted_image)
